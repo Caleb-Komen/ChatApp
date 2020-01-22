@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "891173022201",
+    "firebase_url": "https://message-a928f.firebaseio.com",
+    "project_id": "message-a928f",
+    "storage_bucket": "message-a928f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:891173022201:android:255201adcbc5544ae43528",
+        "android_client_info": {
+          "package_name": "com.chats.message"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "891173022201-mke899vstcl1bf33sirngrijkh3s4vjs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxKGne8g-DpkSsiVazEsBB4vn7OhnbXfw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "891173022201-mke899vstcl1bf33sirngrijkh3s4vjs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
