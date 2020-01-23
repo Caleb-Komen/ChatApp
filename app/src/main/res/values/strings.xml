@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Message</string>
+
+    <string name="long_text">
+        This is a long text. This is a long text. This is a long text. \n
+        This is a long text. This is a long text. This is a long text.
+    </string>
 </resources>
