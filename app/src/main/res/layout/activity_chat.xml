@@ -9,6 +9,7 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/list_view"
         android:layout_above="@+id/linear_layout"
         android:stackFromBottom="true"
         tools:listitem="@layout/item_message"/>
@@ -42,7 +43,9 @@
             android:src="@drawable/ic_send"
             android:tint="@color/blue_1"
             android:background="@android:color/transparent"
-            android:id="@+id/message_send"/>
+            android:id="@+id/message_send"
+            android:onClick="sendMessage"
+            android:visibility="invisible"/>
     </LinearLayout>
 
 </RelativeLayout>
