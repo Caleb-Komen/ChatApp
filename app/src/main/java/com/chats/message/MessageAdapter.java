@@ -35,7 +35,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
         TextView tvMessage = convertView.findViewById(R.id.text_message);
         TextView tvSender = convertView.findViewById(R.id.sender_name);
-        ImageView photo = convertView.findViewById(R.id.photo);
+        ImageView photoImageView = convertView.findViewById(R.id.photo);
 
         Message message = getItem(position);
         String textMessage = message.getTextMessage();
@@ -43,15 +43,16 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         String photoUrl = message.getPhotoUrl();
 
         if (photoUrl == null){
+            photoImageView.setVisibility(View.GONE);
             tvMessage.setVisibility(View.VISIBLE);
             tvMessage.setText(textMessage);
 
         } else {
-            tvMessage.setVisibility(View.INVISIBLE);
-            photo.setVisibility(View.VISIBLE);
+            tvMessage.setVisibility(View.GONE);
+            photoImageView.setVisibility(View.VISIBLE);
             Glide.with(context)
                     .load(photoUrl)
-                    .into(photo);
+                    .into(photoImageView);
         }
 
         tvSender.setText(sender);

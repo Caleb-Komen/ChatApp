@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.chats.message.model.Message;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -27,6 +29,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +39,14 @@ import java.util.List;
 public class ChatActivity extends AppCompatActivity {
 
     public static final String TAG = ChatActivity.class.getName();
+    public static final int PICK_PHOTO = 9001;
 
     private FirebaseAuth.AuthStateListener authStateListener;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
     private ChildEventListener childEventListener;
+    private FirebaseStorage firebaseStorage;
+    private StorageReference storageReference;
     private MessageAdapter messageAdapter;
     private ImageButton btnSend;
 
@@ -58,13 +66,16 @@ public class ChatActivity extends AppCompatActivity {
         listView = findViewById(R.id.list_view);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseStorage = FirebaseStorage.getInstance();
         databaseReference = firebaseDatabase.getReference().child("messages");
+        storageReference = firebaseStorage.getReference().child("chat_photos");
 
         List<Message> messages = new ArrayList<>();
         messageAdapter = new MessageAdapter(this, R.layout.item_message, messages);
         listView.setAdapter(messageAdapter);
 
         setUpFirebaseAuth();
+        setUpChildEventListener();
 
         // Enable Send button when there's text to send
         etTextMessage.addTextChangedListener(new TextWatcher() {
@@ -161,15 +172,9 @@ public class ChatActivity extends AppCompatActivity {
             finish();
         } else {
             Log.d(TAG, "checkAuthState: user is authenticated");
-            setUpChildEventListener();
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        detachChildEventListener();
-    }
 
     @Override
     protected void onStart() {
@@ -185,6 +190,12 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        detachChildEventListener();
+    }
+
     public void sendMessage(View view) {
         String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         String sender = email.substring(0, email.indexOf("@"));
@@ -194,5 +205,47 @@ public class ChatActivity extends AppCompatActivity {
         databaseReference.push().setValue(message);
 
         etTextMessage.setText("");
+    }
+
+    public void selectPhoto(View view) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_PHOTO);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK && data != null){
+            if (requestCode == PICK_PHOTO){
+                Uri photoUri = data.getData();
+                final StorageReference photoRef = storageReference.child(photoUri.getLastPathSegment());
+                photoRef.putFile(photoUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()){
+                            throw task.getException();
+                        }
+
+                        // Continue with the task to get the download URL
+                        return photoRef.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if(task.isSuccessful()){
+                            Uri downloadUrl = task.getResult();
+                            String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                            String sender = email.substring(0, email.indexOf("@"));
+                            Message message = new Message(sender, null, downloadUrl.toString());
+                            databaseReference.push().setValue(message);
+
+                        }
+                    }
+                });
+            }
+        }
     }
 }

@@ -12,7 +12,9 @@
         android:id="@+id/list_view"
         android:layout_above="@+id/linear_layout"
         android:stackFromBottom="true"
-        tools:listitem="@layout/item_message"/>
+        tools:listitem="@layout/item_message"
+        android:divider="@null"
+        android:dividerHeight="0dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,6 +22,7 @@
         android:id="@+id/linear_layout"
         android:orientation="horizontal"
         android:gravity="center_vertical"
+        android:padding="8dp"
         android:layout_alignParentBottom="true">
 
         <ImageButton
@@ -28,6 +31,7 @@
             android:background="@android:color/transparent"
             android:tint="@color/blue_1"
             android:src="@drawable/ic_insert_photo"
+            android:onClick="selectPhoto"
             android:id="@+id/insert_photo"/>
 
         <EditText
@@ -35,7 +39,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:id="@+id/text_message"
-            android:background="@android:color/transparent"/>
+            android:background="@android:color/transparent"
+            android:inputType="textCapSentences"/>
 
         <ImageButton
             android:layout_width="36dp"

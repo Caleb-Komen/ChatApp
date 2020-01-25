@@ -18,8 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/photo"
-        android:maxHeight="200dp"
-        android:visibility="invisible"/>
+        android:maxHeight="200dp"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -27,7 +26,8 @@
         android:id="@+id/text_message"
         android:text="@string/long_text"
         android:textColor="@android:color/white"
-        android:maxWidth="200dp"/>
+        android:maxWidth="200dp"
+        android:minWidth="80dp"/>
     </LinearLayout>
 
     <TextView
