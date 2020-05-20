@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.chats.message.ui.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -34,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setUpFirebaseListener();
         setContentView(R.layout.activity_login);
 
         userEmail = findViewById(R.id.user_email);
@@ -41,8 +43,6 @@ public class LoginActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_bar);
 
         firebaseAuth = FirebaseAuth.getInstance();
-
-        setUpFirebaseListener();
     }
 
     private void setUpFirebaseListener() {
@@ -95,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void openChatScreen() {
-        Intent intent = new Intent(this, ChatActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();

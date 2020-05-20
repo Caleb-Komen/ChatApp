@@ -13,32 +13,39 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.chats.message.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUpActivity extends AppCompatActivity {
 
     public static final String TAG = SignUpActivity.class.getName();
 
     // widgets
-    private EditText userName, userEmail, userPassword, confirmPassword;
+    private EditText mUserName, mUserEmail, mUserPassword, mConfirmPassword;
     private ProgressBar progressBar;
 
     // vars
     FirebaseAuth firebaseAuth;
-
+    FirebaseDatabase mFirebaseDatabase;
+    public DatabaseReference mDatabaseReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        userName = findViewById(R.id.user_name);
-        userEmail = findViewById(R.id.user_email);
-        userPassword = findViewById(R.id.user_password);
-        confirmPassword = findViewById(R.id.user_confirm_password);
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mDatabaseReference = mFirebaseDatabase.getReference().child("users");
+        mUserName = findViewById(R.id.user_name);
+        mUserEmail = findViewById(R.id.user_email);
+        mUserPassword = findViewById(R.id.user_password);
+        mConfirmPassword = findViewById(R.id.user_confirm_password);
         progressBar = findViewById(R.id.progress_bar);
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -49,9 +56,9 @@ public class SignUpActivity extends AppCompatActivity {
         showProgressBar();
         hideSoftKeyboard();
 
-        String email = userEmail.getText().toString().trim();
-        String password = userPassword.getText().toString().trim();
-        String confirmationPassword = confirmPassword.getText().toString().trim();
+        String email = mUserEmail.getText().toString().trim();
+        String password = mUserPassword.getText().toString().trim();
+        String confirmationPassword = mConfirmPassword.getText().toString().trim();
 
         if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(confirmationPassword)){
             if (password.equals(confirmationPassword)){
@@ -60,12 +67,15 @@ public class SignUpActivity extends AppCompatActivity {
                     // sign up user
                     signUpUser(email, password);
                 } else {
+                    hideProgressBar();
                     Toast.makeText(this, "Register with valid email domain", Toast.LENGTH_SHORT).show();
                 }
             }else {
+                hideProgressBar();
                 Toast.makeText(this, "Passwords do not Match", Toast.LENGTH_SHORT).show();
             }
         } else {
+            hideProgressBar();
             Toast.makeText(this, "Fill out all the fields", Toast.LENGTH_SHORT).show();
         }
     }
@@ -78,6 +88,7 @@ public class SignUpActivity extends AppCompatActivity {
                 hideProgressBar();
                 if (task.isSuccessful()){
                     Toast.makeText(SignUpActivity.this, "Signed Up", Toast.LENGTH_SHORT).show();
+                    addUser();
                     firebaseAuth.signOut();
                     redirectToLoginScreen();
                 }else {
@@ -120,5 +131,21 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void hideSoftKeyboard(){
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
+    private void addUser() {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser != null){
+            String userName = mUserName.getText().toString().trim();
+            User user = new User();
+            user.setUserId(firebaseUser.getUid());
+            user.setUserName(userName);
+            user.setEmail(firebaseUser.getEmail());
+            user.setProfilePicture("");
+
+            mDatabaseReference.child(firebaseUser.getUid()).setValue(user);
+        } else {
+            Log.d(TAG, "addUser: User logged out");
+        }
     }
 }

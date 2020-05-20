@@ -5,4 +5,7 @@
         This is a long text. This is a long text. This is a long text. \n
         This is a long text. This is a long text. This is a long text.
     </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
