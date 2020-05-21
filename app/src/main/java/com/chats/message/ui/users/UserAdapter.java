@@ -1,6 +1,7 @@
 package com.chats.message.ui.users;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,10 +44,19 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         User user = mUsers.get(position);
         holder.username.setText(user.getUserName());
-        Glide.with(context)
-                .load(user.getProfilePicture())
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(holder.profilePicture);
+        if (TextUtils.isEmpty(user.getUserId())) {
+            Glide.with(context)
+                    .load(user.getProfilePicture())
+                    .placeholder(R.drawable.ic_person)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(holder.profilePicture);
+        } else {
+            Glide.with(context)
+                    .load(R.drawable.ic_person)
+                    .placeholder(R.drawable.ic_person)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(holder.profilePicture);
+        }
     }
 
     @Override
