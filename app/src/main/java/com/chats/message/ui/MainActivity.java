@@ -1,16 +1,21 @@
 package com.chats.message.ui;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.chats.message.MainAdapter;
 import com.chats.message.R;
+import com.chats.message.UserSettingsActivity;
 import com.chats.message.model.User;
 import com.chats.message.ui.chat.ChatsFragment;
 import com.chats.message.ui.group.GroupsFragment;
@@ -98,5 +103,17 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_edit_profile){
+            startActivity(new Intent(this, UserSettingsActivity.class));
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

@@ -1,5 +1,6 @@
 package com.chats.message.ui.users;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import com.chats.message.R;
 import com.chats.message.model.User;
 import com.chats.message.ui.MainActivity;
+import com.chats.message.ui.details.UserDetailsActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -28,13 +30,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class UsersFragment extends Fragment {
+public class UsersFragment extends Fragment implements UserAdapter.OnListItemClickListener {
 
     private static final String TAG = "UsersFragment";
     private FirebaseDatabase mDatabase;
     private DatabaseReference mDatabaseReference;
     private UserViewModel mViewModel;
     private UserAdapter mAdapter;
+    private List<User> mUsers;
 
     public UsersFragment() {
         // Required empty public constructor
@@ -54,6 +57,7 @@ public class UsersFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_users, container, false);
         RecyclerView userRecyclerView = view.findViewById(R.id.user_recycler_view);
         mAdapter = new UserAdapter(getActivity());
+        mAdapter.setOnListItemClickListener(this);
         userRecyclerView.setHasFixedSize(true);
         userRecyclerView.setAdapter(mAdapter);
         return view;
@@ -90,12 +94,14 @@ public class UsersFragment extends Fragment {
     private ValueEventListener eventListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            List<User> users = new ArrayList<>();
+            mUsers = new ArrayList<>();
             for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
                 User user = singleSnapshot.getValue(User.class);
-                users.add(user);
+                if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(user.getUserId())) {
+                    mUsers.add(user);
+                }
             }
-            mViewModel.setUsers(users);
+            mViewModel.setUsers(mUsers);
         }
 
         @Override
@@ -103,4 +109,11 @@ public class UsersFragment extends Fragment {
 
         }
     };
+
+    @Override
+    public void onItemClick(int position) {
+        Intent intent = new Intent(getActivity(), UserDetailsActivity.class);
+        intent.putExtra(UserDetailsActivity.KEY_INCOMING_USER, mUsers.get(position));
+        startActivity(intent);
+    }
 }

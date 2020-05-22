@@ -1,6 +1,7 @@
 package com.chats.message.ui.users;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     private Context context;
     private List<User> mUsers = new ArrayList<>();
+    public OnListItemClickListener mOnListItemClickListener;
 
     public UserAdapter(Context context) {
         this.context = context;
@@ -33,11 +35,20 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         mUsers = users;
         notifyDataSetChanged();
     }
+
+    public interface OnListItemClickListener{
+        void onItemClick(int position);
+    }
+
+    public void setOnListItemClickListener(OnListItemClickListener onListItemClickListener) {
+        this.mOnListItemClickListener = onListItemClickListener;
+    }
+
     @NonNull
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.user_item, parent, false);
-        return new UserViewHolder(view);
+        return new UserViewHolder(view, mOnListItemClickListener);
     }
 
     @Override
@@ -68,10 +79,17 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         private TextView username;
         private CircleImageView profilePicture;
 
-        public UserViewHolder(@NonNull View itemView) {
+        public UserViewHolder(@NonNull View itemView, final OnListItemClickListener itemClickListener) {
             super(itemView);
             username = itemView.findViewById(R.id.user_name);
             profilePicture = itemView.findViewById(R.id.profile_picture);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    itemClickListener.onItemClick(getAdapterPosition());
+                }
+            });
         }
     }
 }
