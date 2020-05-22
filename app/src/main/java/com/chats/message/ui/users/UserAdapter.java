@@ -55,7 +55,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         User user = mUsers.get(position);
         holder.username.setText(user.getUserName());
-        if (TextUtils.isEmpty(user.getUserId())) {
+        if (!TextUtils.isEmpty(user.getProfilePicture())) {
             Glide.with(context)
                     .load(user.getProfilePicture())
                     .placeholder(R.drawable.ic_person)

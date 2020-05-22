@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.chats.message.LoginActivity;
 import com.chats.message.MainAdapter;
 import com.chats.message.R;
 import com.chats.message.UserSettingsActivity;
@@ -104,6 +105,31 @@ public class MainActivity extends AppCompatActivity {
     };
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseAuth.getInstance().addAuthStateListener(authStateListener);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkAuthState();
+    }
+
+    private void checkAuthState() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user == null){
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        } else {
+            Log.d(TAG, "checkAuthState: user is authenticated");
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
@@ -113,7 +139,30 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_edit_profile){
             startActivity(new Intent(this, UserSettingsActivity.class));
+        } else if (item.getItemId() == R.id.action_logout){
+            FirebaseAuth.getInstance().signOut();
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        FirebaseAuth.getInstance().removeAuthStateListener(authStateListener);
+    }
+
+    private FirebaseAuth.AuthStateListener authStateListener = new FirebaseAuth.AuthStateListener() {
+        @Override
+        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user == null){
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            } else {
+                Log.d(TAG, "onAuthStateChanged: user logged in");
+            }
+        }
+    };
 }
