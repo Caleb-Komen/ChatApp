@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_margin="16dp"
+    android:background="?attr/selectableItemBackground"
     android:gravity="center_vertical">
 
     <de.hdodenhof.circleimageview.CircleImageView
