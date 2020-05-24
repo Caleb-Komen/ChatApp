@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--    when in normal state-->
+    <item android:state_pressed="false" android:state_enabled="true">
+        <layer-list>
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="@color/colorPrimaryDark" />
+                </shape>
+            </item>
+            <item>
+                <bitmap android:src="@drawable/ic_send_image" />
+            </item>
+        </layer-list>
+    </item>
+
+    <!--    when pressed-->
+    <item android:state_pressed="true">
+        <layer-list>
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="@color/colorAccent" />
+                </shape>
+            </item>
+            <item>
+                <bitmap android:src="@drawable/ic_send"/>
+            </item>
+        </layer-list>
+    </item>
+
+    <!--    when disabled-->
+    <item android:state_enabled="false">
+        <layer-list >
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="@color/colorPrimary" />
+                </shape>
+            </item>
+            <item>
+                <bitmap android:src="@drawable/ic_send"
+                    android:tint="@android:color/darker_gray"/>
+            </item>
+        </layer-list>
+    </item>
+
+</selector>

@@ -139,8 +139,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_edit_profile){
             startActivity(new Intent(this, UserSettingsActivity.class));
+            return true;
         } else if (item.getItemId() == R.id.action_logout){
             FirebaseAuth.getInstance().signOut();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

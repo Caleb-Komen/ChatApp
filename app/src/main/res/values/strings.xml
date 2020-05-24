@@ -11,6 +11,7 @@
 
     // db node
     <string name="db_node_users">users</string>
+    <string name="db_node_messages">messages</string>
 
     // firebase storage
     <string name="ref_profile_pic">profile_pictures</string>

@@ -45,7 +45,6 @@ public class UserSettingsActivity extends AppCompatActivity implements View.OnCl
     // widgets
     private EditText mUserName, mUserEmail;
     private CircleImageView mProfilePicture;
-    private Button btnSave;
 
     // vars
     private DatabaseReference mDatabaseReference;
@@ -62,7 +61,7 @@ public class UserSettingsActivity extends AppCompatActivity implements View.OnCl
         mUserName = findViewById(R.id.et_user_name);
         mUserEmail = findViewById(R.id.et_user_email);
         mProfilePicture = findViewById(R.id.profile_picture);
-        btnSave = findViewById(R.id.save_changes);
+        Button btnSave = findViewById(R.id.save_changes);
 
         verifyPermissions();
         getUserDetails();
@@ -71,8 +70,7 @@ public class UserSettingsActivity extends AppCompatActivity implements View.OnCl
     }
 
     public void getUserDetails(){
-        Query query = mDatabaseReference.orderByKey().equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        query.addValueEventListener(eventListener);
+        mDatabaseReference.orderByKey().equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
     }
 
     private ValueEventListener eventListener = new ValueEventListener() {

@@ -34,8 +34,8 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         }
 
         TextView tvMessage = convertView.findViewById(R.id.text_message);
-        TextView tvSender = convertView.findViewById(R.id.sender_name);
-        ImageView photoImageView = convertView.findViewById(R.id.photo);
+        TextView tvSender = convertView.findViewById(R.id.user_email);
+        ImageView photoImageView = convertView.findViewById(R.id.profile_picture);
 
         Message message = getItem(position);
         String textMessage = message.getTextMessage();
