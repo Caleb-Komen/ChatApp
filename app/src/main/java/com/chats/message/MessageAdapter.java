@@ -39,7 +39,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
         Message message = getItem(position);
         String textMessage = message.getTextMessage();
-        String sender = message.getSender();
+        String sender = message.getSenderId();
         String photoUrl = message.getPhotoUrl();
 
         if (photoUrl == null){

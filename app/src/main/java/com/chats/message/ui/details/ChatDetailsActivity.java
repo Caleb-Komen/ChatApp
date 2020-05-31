@@ -27,11 +27,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ChatDetailsActivity extends AppCompatActivity {
 
     public static final String KEY_CHATS = "com.chats.message.ui.details.KEY_CHATS";
+    public static final String KEY_GROUP_ID = "com.chats.message.ui.details.KEY_GROUP_ID";
     private static final String TAG = "ChatDetailsActivity";
 
     private ListView mMessageListView;
@@ -57,6 +57,10 @@ public class ChatDetailsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent.hasExtra(KEY_CHATS)){
             mUser = intent.getParcelableExtra(KEY_CHATS);
+            setMessagesDbReference();
+        } else if (intent.hasExtra(KEY_GROUP_ID)){
+            String groupId = intent.getStringExtra(KEY_GROUP_ID);
+            setGroupMessagesDbReference(groupId);
         }
         mViewModel = new ViewModelProvider(this).get(ChatDetailsViewModel.class);
         mViewModel.getMessages().observe(this, new Observer<Message>() {
@@ -66,8 +70,6 @@ public class ChatDetailsActivity extends AppCompatActivity {
             }
         });
 
-        setDbReference();
-
         mBtnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,7 +78,13 @@ public class ChatDetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void setDbReference() {
+    private void setGroupMessagesDbReference(String groupId) {
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference()
+                .child("group_messages")
+                .child(groupId);
+    }
+
+    private void setMessagesDbReference() {
         String uid1 = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String uid2 = mUser.getUserId();
         String chatsId = oneToOneChatId(uid1, uid2);
@@ -86,9 +94,18 @@ public class ChatDetailsActivity extends AppCompatActivity {
     }
 
     private void sendMessage() {
-        String messageContent = mTextBox.getText().toString().trim();
-
-        Message message = new Message(null, messageContent, null);
+        Message message = new Message();
+        if (mUser != null) { // one to one message(user to user)
+            String messageContent = mTextBox.getText().toString().trim();
+            String senderId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            String receiverId = mUser.getUserId();
+            message.setSenderId(senderId);
+            message.setReceiverId(receiverId);
+            message.setTextMessage(messageContent);
+        } else { // group message
+            message.setSenderId(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            message.setTextMessage(mTextBox.getText().toString().trim());
+        }
         mDatabaseReference.push().setValue(message).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

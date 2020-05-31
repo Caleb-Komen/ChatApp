@@ -12,7 +12,9 @@
     // db node
     <string name="db_node_users">users</string>
     <string name="db_node_messages">messages</string>
+    <string name="db_node_groups">groups</string>
 
     // firebase storage
     <string name="ref_profile_pic">profile_pictures</string>
+    <string name="ref_group_profile_pics">group_profile_pics</string>
 </resources>

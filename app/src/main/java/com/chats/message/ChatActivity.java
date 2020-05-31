@@ -62,7 +62,7 @@ public class ChatActivity extends AppCompatActivity {
 
         etTextMessage = findViewById(R.id.text_message);
         btnSend = findViewById(R.id.message_send);
-        rootView = findViewById(R.id.root_view);
+        rootView = findViewById(R.id.root_layout);
         listView = findViewById(R.id.list_view);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -201,7 +201,7 @@ public class ChatActivity extends AppCompatActivity {
         String sender = email.substring(0, email.indexOf("@"));
         String textMessage = etTextMessage.getText().toString();
 
-        Message message = new Message(sender, textMessage, null);
+        Message message = new Message(sender,null, textMessage, null);
         databaseReference.push().setValue(message);
 
         etTextMessage.setText("");
@@ -239,7 +239,7 @@ public class ChatActivity extends AppCompatActivity {
                             Uri downloadUrl = task.getResult();
                             String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
                             String sender = email.substring(0, email.indexOf("@"));
-                            Message message = new Message(sender, null, downloadUrl.toString());
+                            Message message = new Message(sender, null,null, downloadUrl.toString());
                             databaseReference.push().setValue(message);
 
                         }

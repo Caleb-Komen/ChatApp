@@ -20,6 +20,7 @@ import com.chats.message.UserSettingsActivity;
 import com.chats.message.model.User;
 import com.chats.message.ui.chat.ChatsFragment;
 import com.chats.message.ui.group.GroupsFragment;
+import com.chats.message.ui.group.NewGroupDialog;
 import com.chats.message.ui.users.UsersFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -63,7 +64,8 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Start conversation", Toast.LENGTH_SHORT).show();
                         break;
                     case 2:
-                        Toast.makeText(MainActivity.this, "Add new group", Toast.LENGTH_SHORT).show();
+                        NewGroupDialog newGroupDialog = new NewGroupDialog();
+                        newGroupDialog.show(getSupportFragmentManager(), null);
                         break;
                 }
             }
